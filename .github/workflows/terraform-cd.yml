@@ -1,0 +1,56 @@
+
+
+name: Deployment static website to S3 with terraform
+
+on:
+  push:
+    branches:
+      - 'feature/*'
+
+  pull_request:
+    types: [opened, reopened, synchronize]
+    branches:
+      - main
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: .
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: '1.14.0'
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v5.1.0
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Terraform Format
+        run: terraform fmt
+
+      - name: Initialize Terraform
+        run: terraform init
+        working-directory: modules/userfrontend_profile_bucket
+
+      - name: Terraform Validate
+        run: terraform validate
+        working-directory: modules/userfrontend_profile_bucket
+
+      - name: Terraform Plan
+        run: terraform plan
+        working-directory: modules/userfrontend_profile_bucket
+
+      - name: Apply Terraform configuration
+        run: terraform apply -auto-approve
+        working-directory: modules/userfrontend_profile_bucket
