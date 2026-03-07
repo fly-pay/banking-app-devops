@@ -1,6 +1,6 @@
 
 
-name: Deployment static website to S3 with terraform
+name: Deployment nextjs website to EC2 with cloudfront
 
 on:
   push:
@@ -41,16 +41,16 @@ jobs:
 
       - name: Initialize Terraform
         run: terraform init
-        working-directory: modules/userfrontend_profile_bucket
+        working-directory: modules/corporate-profile-bucket
 
       - name: Terraform Validate
         run: terraform validate
-        working-directory: modules/userfrontend_profile_bucket
+        working-directory: modules/corporate-profile-bucket
 
       - name: Terraform Plan
         run: terraform plan
-        working-directory: modules/userfrontend_profile_bucket
+        working-directory: modules/corporate-profile-bucket
 
       - name: Apply Terraform configuration
         run: terraform apply -auto-approve
-        working-directory: modules/userfrontend_profile_bucket
+        working-directory: modules/corporate-profile-bucket
